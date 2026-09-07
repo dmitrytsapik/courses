@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Installation of QEMU</title>
+	<style>
+		code {
+			/*https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/code*/
+			background-color: #eeeeee;
+			border-radius: 3px;
+			font-family: "Courier New", monospace;
+			padding: 0 3px;
+			white-space: nowrap;
+		}
+		kbd {
+			/*https://developer.mozilla.org/ru/docs/Web/HTML/Reference/Elements/kbd*/
+			border-radius: 3px;
+			padding: 1px 2px 0;
+			border: 1px solid black;
+		}
+	</style>
+</head>
+<body>
+	<h1>Installation of QEMU</h1>
+	<p>The lab environment can be deployed on a computer via <strong><a href="https://qemu.org">QEMU</a></strong> or on a mobile device via <strong><a href="https://virtualmachinery.weebly.com/">Limbo Emulator</a></strong> (QEMU).</p>
+	<p>QEMU is a machine emulator and virtualizer. It supports two operation modes: <em><a href="https://www.qemu.org/docs/master/system/index.html#system-emulation">System Emulation</a></em> for running full virtual machines and <em><a href="https://www.qemu.org/docs/master/user/index.html#user-mode-emulation">User‑Mode Emulation</a></em> for executing binaries built for a different CPU architecture (<a href="https://www.qemu.org/docs/master/about/index.html">About QEMU</a>, 2026).<p>
+	<h2>Installing QEMU on Windows:</h2>
+	<ol>
+		<li>Go to the <strong><a href="https://www.qemu.org/download">Download QEMU</a></strong> page, open the <strong>Windows</strong> tab, and in the sentence <em>Stefan Weil provides...</em> select the 32‑bit or 64‑bit platform version.</li>
+		<li>After following the above link, select the latest QEMU version (for example <code>qemu‑w64‑setup‑20240720.exe</code>), download it and run as administrator by right‑clicking and choosing <strong>Run as administrator</strong>.</li>
+			<ul>
+				<li>In the <strong>Choose Components</strong> step, under the <strong>System Emulation</strong> group, select <strong>x86_64</strong> and <strong>x86_64w</strong> only.</li>
+				<li>Remember the installation directory in the <strong>Choose Install Location</strong> step.</li>
+			</ul>
+		<li>Add the <em>QEMU installation directory</em> to the system <em>PATH (variable)</em>.
+			<p class="note">The <em>PATH</em> is a system environment variable that the operating system uses to locate executable files from the command line (<a href="https://en.wikipedia.org/wiki/PATH_(variable)">PATH (variable) - Wikipedia</a>, 2026).</p>
+		</li>
+			<ul>
+				<li>Press <kbd>Win</kbd> + <kbd>X</kbd> and select <strong>System</strong></li>
+				<li>In the <strong>Advanced system settings</strong> window, click <strong>Environment Variables...</strong>.</li>
+				<li>Under <strong>System Variables</strong> (alternatively, <strong>User Variables</strong> for individual configuration), find and select <em>Path</em>, then click <strong>Edit</strong>.</li>
+				<li>Click <strong>New</strong>, then enter the <em>QEMU installation directory</em> (e.g., <em>C:\Program Files\QEMU</em>).</li>
+			</ul>
+		<li>To verify that QEMU has been successfully installed and added to the <em>Path</em>, open <strong>Command Prompt</strong> (press <kbd>Win</kbd> + <kbd>R</kbd>, type <code>cmd</code>, and press <kbd>Enter</kbd>) and run the following command: <code>qemu-system-x86_64 --version</code>. If the command runs and displays the QEMU version, the <em>Path</em> variable is configured correctly. If you see the message "is not recognized as an internal or external command", the <em>QEMU installation directory</em> is not included in the <em>Path</em>.</li>
+	</ol>
+	<h2>Installing Limbo Emulator (QEMU) on Android:</h2>
+	<p>Limbo is a QEMU‑based emulator for Android that allows running x86, ARM, PowerPC, and SPARC systems on Intel x86 and ARM Android devices (<a href="https://github.com/limboemu/limbo">GitHub - limboemu/limbo</a>, 2026). Limbo is not available on Google Play, so the APK must be downloaded manually.</p>
+	<ol>
+		<li>Download the latest APK from the <a href="https://github.com/limboemu/limbo/releases">Limbo GitHub releases</a>. Ensure that the correct version for the device’s CPU is downloaded (typically ARM).</li>
+		<li>By default, Android blocks APK installation, so to allow installation from unknown sources open <strong>Settings</strong>, go to  <strong>Security</strong> or <strong>Apps & Notifications</strong> and enable <strong>Install unknown apps</strong> for the browser or file manager.</li>
+		<li>To install the APK, open the  <strong>Downloads</strong> folder, tap the <code>Limbo.apk</code> file and confirm installation. After installation, the Limbo icon will appear in the app drawer.</li>
+	</ol>
+	<hr>
+	<a href="https://courses.tsapik.xyz">Course</a> © 2026 by <a href="https://tsapik.xyz">Dmitry Tsapik</a> is licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International</a><img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/nc.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/sa.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;">
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Preparation of QEMU Disk Image</title>
+	<style>
+		code {
+			/*https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/code*/
+			background-color: #eeeeee;
+			border-radius: 3px;
+			font-family: "Courier New", monospace;
+			padding: 0 3px;
+			white-space: nowrap;
+		}
+		kbd {
+			/*https://developer.mozilla.org/ru/docs/Web/HTML/Reference/Elements/kbd*/
+			border-radius: 3px;
+			padding: 1px 2px 0;
+			border: 1px solid black;
+		}
+			/*https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/samp*/
+		.prompt {
+			color: #bb0000;
+		}
+		samp > kbd {
+			border: none;
+			font-weight: bold;
+		}
+		.cursor {
+			color: #0000bb;
+		}
+	</style>
+</head>
+<body>
+	<h1>Preparation of QEMU Disk Image</h1>
+	<p>A <em>disk image</em> is a computer file that encapsulates the full contents and organizational structure of a storage device. The concept has been extended to include any such file, regardless of whether it originates from an actual physical medium or is created virtually (<a href="https://en.wikipedia.org/wiki/Disk_image">Disk image - Wikipedia</a>, 2026).</p>
+	<p>QEMU supports a wide range of disk image formats, including growable images (which expand as non‑empty sectors are written), as well as compressed and encrypted images (<a href="https://www.qemu.org/docs/master/system/images.html">Disk Images &mdash; QEMU  documentation</a>, 2026).<p>
+	<p>In laboratory exercises, the <em><a href="https://en.wikipedia.org/wiki/Qcow">qcow2</a></em> format will be used as QEMU’s second‑generation <em><a href="https://en.wikipedia.org/wiki/Copy-on-write#In_computer_storage">Copy On Write</a></em> disk image type. A qcow2 image encapsulates the complete contents and structure of a virtual disk while supporting snapshots, compression, encryption, and growable size. Compared to the <em><a href="https://en.wikipedia.org/wiki/IMG_(file_format)">raw</a></em> format, qcow2 offers greater flexibility and storage efficiency, whereas raw provides only maximum performance (<a href="https://docs.redhat.com/en/documentation/red_hat_virtualization/4.3/html/technical_reference/qcow2">2.4. Storage Formats for Virtual Disks | Technical Reference | Red Hat Virtualization | 4.3 | Red Hat Documentation</a>, 2026). Two approaches exist for preparing an operating system on a qcow2 image: (<strong>a</strong>) manual installation on the newly created image, or (<strong>b</strong>) deployment of a pre‑built cloud image.</p>
+	<p><em>As the operating system, it is suggested to use <strong><a href="https://www.debian.org/intro/why_debian">Debian Linux</a></strong>, recommended for its stability, security and freedom, although another Linux distribution may also be chosen depending on preference.</em></p>
+	<h2>(a) Manual Installation of Operating System:</h2>
+	<h3>On Windows</h3>
+	<ol>
+		<li>Open <strong>Administrator: Command Prompt</strong> by typing <code>cmd</code> in the <strong>Start</strong> menu, right‑clicking to select <strong>Run as administrator</strong>, or alternatively navigating through <strong>Windows System</strong> &rarr; <strong>Command Prompt</strong>.</li>
+		<li>Create working folder — for example, create a directory <strong>C:\VMs</strong> with <code>mkdir C:\VMs</code>, then switch into it using <code>cd C:\VMs</code>. You may choose any convenient location instead of <strong>C:\VMs</strong>. To move between drives, use the drive letter followed by a colon (e.g. <code>D:</code> to switch to drive D).</li>
+		<li>Create <em>qcow2</em> image by running <code>qemu-img create -f qcow2 debian.qcow2 20G</code>, where <em>debian.qcow2</em> is the image file name and <em>20G</em> sets the virtual disk size (<a href="https://www.qemu.org/docs/master/system/images.html">Disk Images &mdash; QEMU  documentation</a>, 2026).</li>
+		<li>Download <a href="https://www.debian.org">Debian ISO</a> by clicking <strong>Download</strong> on the site and saving the file (e.g. <code>debian-12.6.0-amd64-netinst.iso</code>) into working folder such as <strong>C:\VMs</strong>.</li>
+		<li>Start QEMU by mounting the qcow2 hard disk image and the Debian installer ISO image:<br>
+			<p><code>qemu-system-x86_64.exe -m 2G -smp 2 -boot order=dc -hda debian.qcow2 -cdrom debian-12.6.0-amd64-netinst.iso</code></p>
+			<p>Where:</p>
+			<ul>
+				<li><code>-m 2G</code> specifies 2GB of memory</li>
+				<li><code>-smp 2</code> sets two CPU cores</li>
+				<li><code>-boot order=dc</code> means boot first from CD-ROM (d), then from hard disk (c)</li>
+				<li><code>-hda debian.qcow2</code> defines the virtual hard disk in qcow2 format</li>
+				<li><code>-cdrom debian-12.6.0-amd64-netinst.iso</code> attaches the Debian installer ISO as a virtual CD-ROM</li>
+			</ul>
+			<p>More details about these parameters can be found on the page <strong><a href="https://www.qemu.org/docs/master/system/invocation.html">Invocation &mdash; QEMU documentation</a></strong>.</p>
+			<p>Internet will be available in the guest system right away and no additional configuration is required (<a href="https://www.qemu.org/docs/master/system/devices/net.html">Network emulation &mdash; QEMU  documentation</a>, 2026).</p>
+		</li>
+		<li>
+			Install Debian Linux according to the guide <strong><a href="https://debian-handbook.info/browse/stable/sect.installation-steps.html">4.2. Installing, Step by Step</a></strong> available at the <a href="https://debian-handbook.info/">Debian Handbook</a>.
+			<p>Pressing <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>G</kbd> releases the grab.</p>
+		</li>
+		<li>
+			After installation, Debian should be started with the following command: <code>qemu-system-x86_64.exe -m 2G -smp 2 -hda debian.qcow2</code>
+			<p>In case of problems with QEMU, use the help command: <code>qemu-system-x86_64.exe --help</code></p>
+		</li>
+	</ol>
+	<h3>On Android</h3>
+	<ol>
+		<li>On internal storage or on the SD card, create a directory such as <code>/storage/emulated/0/VMs</code> (internal phone storage) or <code>/storage/XXXX-XXXX/VMs</code> (where <code>XXXX-XXXX</code> is the SD card identifier, e.g. <code>/storage/1234-5678/</code>) to store disk images and ISO files.</li>
+		<li>As in <strong>Step 4</strong> of the <strong>On Windows</strong> section, download the Debian installer ISO (e.g. <code>debian-12.6.0-amd64-netinst.iso</code>) and place it into working folder.</li>
+		<li>Open <strong>Limbo x86</strong> in the app drawer, then in the menu (three vertical dots) select <strong>Create Machine</strong>, enter a name for the Virtual Machine, and press <strong>Create</strong>.
+		<li>Configure Virtual Machine settings by set the following parameters:
+			<ul>
+				<li><strong>User Interface</strong> (Display : SDL (<em><a href="https://en.wikipedia.org/wiki/Simple_DirectMedia_Layer">Simple DirectMedia Layer</a></em>, provides direct graphics and audio output), Keyboard : en-us, Mouse : ps2)</li>
+				<li><strong>Board</strong> (Machine Type : pc, CPU Model: qemu64, CPU Cores: 2, RAM Memory (MB): 2000</li>
+				<li><strong>Board &rarr; Advanced options (toggles):</strong> Enable MTTCG (<em><a href="https://www.qemu.org/docs/master/devel/multi-thread-tcg.html">multi‑threaded emulation</a></em>): Disable, Disable HPET (<em><a href="https://en.wikipedia.org/wiki/High_Precision_Event_Timer">high‑precision timer</a></em>): Enable, Enable KVM (<em><a href="https://en.wikipedia.org/wiki/Kernel-based_Virtual_Machine">Kernel-based Virtual Machine</a></em> acceleration): Disable, Disable TSC (disables <em><a href="https://en.wikipedia.org/wiki/Time_Stamp_Counter">time‑stamp counter</a></em>): Enable; Disable ACPI (<em><a href="https://en.wikipedia.org/wiki/ACPI">Advanced Configuration and Power Interface</a></em>): Disable)</li>
+				<li><strong>Disks</strong> (In the field right <strong>Hard Disk A</strong> where it shows <strong>None</strong>, select <strong>New</strong>, enter a name for image (e.g. debian.qcow2), choose <strong>20 GB (Growable)</strong> as size and press <strong>Change Directory</strong>, select your working folder, then press <strong>Create</strong>. <em>The disk image file will be stored in working directory.</em></li>
+				<li><strong>Removable</strong> (CDROM (toggle): Enabled ). In the field where it shows <strong>None</strong>, select <strong>Open</strong> and choose the Debian installer ISO image in working directory.</li>
+				<li><strong>Boot</strong> (Boot from Device: CDROM)</li>
+				<li><strong>Graphics</strong> (Video Display: std)</li>
+				<li><strong>Audio</strong> (Sound Card: None)</li>
+				<li><strong>Network</strong> (Network: User, Network Card: Default, DNS Server: 8.8.8.8)</li>
+			</ul>
+		</li>
+		<li>Press <strong>Play</strong> button and install Debian according to <strong>Step 6</strong> of the <strong>On Windows</strong>. Control of the virtual machine can be carried out through the menu (vertical three dots).</li>
+		<li>After installation, in the virtual machine settings change parameter <strong>Boot</strong> (Boot from Device: Hard Disk). The system will then boot from the first disk (Hard Disk A).</li>
+	</ol>
+	<h2>(b) Deployment of Pre‑built Cloud Image</h2>
+	<h3>On Windows</h3>
+	<ol>
+		<li>Complete <strong>Step 1</strong> and <strong>Step 2</strong> of subsection <strong>On Windows</strong> in section <strong>(a) Manual Installation of Operating System</strong>.</li>
+		<li>
+			Go to the webpage <strong><a href="http://cloud.debian.org/images/cloud/">Debian Official Cloud Images</a></strong>, scroll down, select the latest Debian build (<strong>Trixie</strong>), open the <strong>latest</strong> directory, download the file <code>debian‑13‑nocloud‑amd64.qcow2</code>, and place it directly into the working directory (e.g. <strong>C:\VMs</strong>).
+			<p>Verification can be performed by downloading the <code>SHA512SUMS</code> file in the same directory, running <code>Get-FileHash debian-13-nocloud-amd64.qcow2 -Algorithm SHA512</code> in <strong>PowerShell</strong> on Windows, and comparing the output with the published checksum to confirm authenticity.</p>
+			<p>The <strong>nocloud</strong> image is chosen because it is self‑contained, does not rely on external <strong>cloud‑init</strong> metadata, and is therefore ideal for straightforward local QEMU deployment under Windows.</p>
+		</li>
+		<li>
+			For increasing space on the virtual disk, execute the command from <strong>Command Prompt</strong> in the working directory<br><code>qemu-img resize debian-13-nocloud-amd64.qcow2 +20G</code>, where <code>+20G</code> means adding 20 gigabyte to the current disk size (<a href=" https://www.qemu.org/docs/master/tools/qemu-img.html">QEMU disk image utility &mdash; QEMU  documentation</a>, 2026).
+			<p>After resizing the qcow2 image with <code>qemu-img</code>, extra steps are needed inside the VM. <code>qemu-img</code> only enlarges the virtual disk container. The partition table and filesystem inside the OS remain at their old size. Until the partition is expanded and the filesystem grown, the new space is invisible and cannot be used.</p>
+		</li>
+		<li>Run the virtual machine by analogy with <strong>Step 7</strong> of subsection <strong>On Windows</strong> in section <strong>(a) Manual Installation of Operating System</strong>.</li>
+		<li>
+			Enlarge partition boundaries and filesystem within the virtual machine.
+			<ul>
+				<li>Log in as the superuser (root) by typing <code>root</code> at the <code>login:</code> prompt and pressing <kbd>Enter</kbd>, since no password is set. <em>If a password is required, the characters entered will not be displayed.</em> After a successful login, the system displays the root shell prompt <samp><span class="prompt">root@localhost:~#</span> <span class="cursor">█</span></samp>, indicating that you are now operating as the superuser. In the shell prompt, <code>~</code> marks the home directory, while <code>#</code> means root and <code>$</code> means a regular user.</li>
+				<li>Enter <code>lsblk</code> to list all block devices and partitions, then compare the total disk size with the size of the root partition <code>/</code> to see how much space can potentially be added (<a href="https://man7.org/linux/man-pages/man8/lsblk.8.html">lsblk(8) - Linux manual page</a>, 2026).
+					<pre>
+<samp><span class="prompt">root@localhost:~#</span> <kbd>lsblk</kbd>
+NAME    MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
+fd0       2:0    1    4K  0 disk
+sda       8:0    0   23G  0 disk
+├─sda1    8:1    0  2.9G  0 part /
+├─sda14   8:14   0    3M  0 part
+└─sda15   8:15   0  124M  0 part /boot/efi
+sr0      11:0    1 1024M  1 rom
+</samp></pre>
+					On <code>lsblk</code>:<br>
+					<code>SIZE</code> for disk <code>sda</code> shows the total capacity (23G).<br>
+					<code>SIZE</code> for partition sda1 shows the current root <code>/</code> size (2.9G).<br>
+					The difference indicates how much the root partition could be expanded, provided adjacent free or unused space exists.<br>
+					This is a breakdown of the <code>lsblk</code> table column, all other available fields can be listed with <code>lsblk --list-columns</code> or <code>lsblk -H</code>:
+					<table>
+						<tr><th>Column</th><th>Meaning</th></tr>
+						<tr><td>NAME</td><td>Device or partition name (e.g., sda, sda1).</td></tr>
+						<tr><td>MAJ:MIN</td><td>Major and minor device numbers used by the kernel to identify the driver and specific device. Major device numbers map to drivers such as 1 for RAM disks (<code>/dev/ram0</code>), 3 for IDE (<code>/dev/hda</code>), 7 for loop devices (<code>/dev/loop0</code>), 8 for SCSI/SATA (<code>/dev/sda</code>), 9 for MD RAID (<code>/dev/md0</code>), 11 for CD‑ROM (<code>/dev/sr0</code>), 65–71 for additional SCSI disks (<code>/dev/sdb</code>, <code>/dev/sdc</code>), 128 for USB storage, and 179 for MMC/SD cards (<code>/dev/mmcblk0</code>). Minor numbers identify the specific device or partition handled by a driver, for example <code>8:0</code> is the whole disk <code>/dev/sda</code>, <code>8:1</code> is its first partition <code>/dev/sda1</code>, and <code>8:2</code> is the second partition <code>/dev/sda2</code>.</td></tr>
+						<tr><td>RM</td><td>Removable flag: 1 means removable (USB, SD card), 0 means fixed disk.</td></tr>
+						<tr><td>SIZE</td><td>Total size of the device or partition.</td></tr>
+						<tr><td>RO</td><td>Read‑only flag: 1 means the device is read‑only, 0 means writable.</td></tr>
+						<tr><td>TYPE</td><td>Type of entry: disk (whole device), part (partition), rom (optical media).</td></tr>
+						<tr><td>MOUNTPOINT</td><td>Directory where the partition is mounted (e.g., /, /home, /media/usb).</td></tr>
+					</table>
+				</li>
+				<li>Execute <code>apt update -y && apt upgrade -y</code> to refresh the package lists and automatically upgrade all installed packages to their latest versions. The <code>-y</code> flag ensures the process runs non‑interactively, accepting all prompts (<a href="https://www.debian.org/doc/manuals/apt-guide/index.en.html">APT User's Guide</a>, 2026).
+				</li>
+				<li>Install parted with <code>apt install parted -y</code> to manage disk partitions — it can display partition tables, create, resize, and delete partitions, and show filesystem information (<a href="https://man7.org/linux/man-pages/man8/parted.8.html">parted(8) — Linux manual page</a>, 2026).<br>
+					<ul>
+						<li>Open parted:
+							<pre>
+<samp><span class="prompt">root@localhost:~#</span> <kbd>parted /dev/sda</kbd>
+GNU Parted 3.6
+Using /dev/sda
+Welcome to GNU Parted! Type 'help' to view a list of commands.
+(parted) <span class="cursor">█</span></samp>
+</pre>
+							Launches interactive mode for disk <code>sda</code>.
+						</li>
+						<li>Inspect partitions by typing <code>print</code> at the <code>parted</code> prompt and pressing <kbd>Enter</kbd> to display the current partition table with sizes, types, and filesystem information.
+							<pre><samp>(parted) print
+Warning: Not all of the space available to /dev/sda appears to be used, you can
+fix the GPT to use all of the space (an extra 41943040 blocks) or continue with
+the current setting?
+(Fix/Ignore?) <span class="cursor">█</span></samp></pre>
+							This warning indicates that the <em><a href="https://en.wikipedia.org/wiki/GUID_Partition_Table">GPT partition table</a></em> on <code>/dev/sda</code> does not cover the full disk capacity — about 41,943,040 blocks remain unused — so type <code>Fix</code> and press <kbd>Enter</kbd> to update the GPT and make the entire space available for partitioning.
+							<pre><samp>Fix/Ignore? Fix
+Model: ATA QEMU HARDDISK (scsi)
+Disk /dev/sda: 24.7GB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start   End     Size    File system  Name  Flags
+14      1049kB  4194kB  3146kB                     bios_grub
+15      4194kB  134MB   130MB   fat16              boot, esp
+ 1      134MB   3220MB  3086MB  ext4
+
+(parted) <span class="cursor">█</span></samp></pre>
+						</li>
+						<li>Resizes partition 1 by typing <code>resizepart 1 100%</code> to extend it until the end of the disk (here <code>100%</code> means all available space) and confirm the warning when prompted.
+							<pre><samp>(parted) resizepart 1 100%
+Warning: Partition /dev/sda1 is being used. Are you sure you want to continue?
+Yes/No? Yes
+(parted) <span class="cursor">█</span></samp></pre>
+						</li>
+						<li>Check the state of the disk by typing <code>print</code> at the <code>parted</code> prompt and pressing <kbd>Enter</kbd>
+								<pre><samp>(parted) print
+Model: ATA QEMU HARDDISK (scsi)
+Disk /dev/sda: 24.7GB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start   End     Size    File system  Name  Flags
+14      1049kB  4194kB  3146kB                     bios_grub
+15      4194kB  134MB   130MB   fat16              boot, esp
+ 1      134MB   24.7GB  24.6GB  ext4
+
+(parted) <span class="cursor">█</span></samp></pre>
+							The partition size has been increased.
+						</li>
+						<li>Type <code>quit</code> and press <kbd>Enter</kbd> at the <code>parted</code> prompt to exit — no need to adjust <em><a href="https://man7.org/linux/man-pages/man5/fstab.5.html">fstab</a></em>, since partition resizing does not change mount points.
+						</li>
+					</ul>
+				</li>
+				<li>After resizing the partition, expand the filesystem (for ext4) by running: <code>resize2fs /dev/sda1</code>
+					<pre><samp><span class="prompt">root@localhost:~#</span> <kbd>resize2fs /dev/sda1</kbd>
+resize2fs 1.47.2 (1-Jan-2025)
+Filesystem at /dev/sda1 is mounted on /; on-line resizing required
+old_desc_blocks = 1, new_desc_blocks = 3
+The filesystem on /dev/sda1 is now 5996539 (4k) blocks long.
+
+<span class="prompt">root@localhost:~#</span> <span class="cursor">█</span></samp></pre>
+				</li>
+				<li>
+					Verify the result with <code>lsblk</code> to confirm the new capacity is recognized.
+					<pre><samp><span class="prompt">root@localhost:~#</span> <kbd>lsblk</kbd>
+NAME    MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
+fd0       2:0    1    4K  0 disk
+sda       8:0    0   23G  0 disk
+├─sda1    8:1    0 22.9G  0 part /
+├─sda14   8:14   0    3M  0 part
+└─sda15   8:15   0  124M  0 part /boot/efi
+sr0      11:0    1 1024M  1 rom
+<span class="prompt">root@localhost:~#</span> <span class="cursor">█</span></samp></pre>
+				</li>
+			</ul>
+		</li>
+		<li>Shut down the machine from the command line, use: <code>shutdown -h now</code></li>
+	</ol>
+		<hr>
+	<a href="https://courses.tsapik.xyz">Course</a> © 2026 by <a href="https://tsapik.xyz">Dmitry Tsapik</a> is licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International</a><img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/nc.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/sa.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;">
+</body>
+</html>
